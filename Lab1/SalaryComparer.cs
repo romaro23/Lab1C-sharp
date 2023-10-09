@@ -1,11 +1,11 @@
-﻿using Lab3;
+﻿using Lab1;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Lab4
+namespace Lab1
 {
     internal class SalaryComparer: IComparer<Employee>
     {

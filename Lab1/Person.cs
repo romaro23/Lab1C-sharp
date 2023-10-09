@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Lab3
+namespace Lab1
 {
     internal class Person : IDateAndCopy, IComparable, IComparer<Person>
     {

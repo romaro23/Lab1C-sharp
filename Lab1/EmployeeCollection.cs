@@ -1,18 +1,22 @@
-﻿using Lab4;
+﻿using Lab1;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
-using static Lab3.Employee;
-using static Lab3.Person;
+using static Lab1.Employee;
+using static Lab1.Person;
 
-namespace Lab3
+namespace Lab1
 {
     internal class EmployeeCollection
     {
+        public delegate void EmployeeListHandler(object source, EmployeeListHandlerEventArgs args);
+        public event EmployeeListHandler EmployeeAdded;
+        public event EmployeeListHandler EmployeeReplaced;
+        public string NameOfCollection { get; set; }
         private List<Employee> employees = new List<Employee>();
-
         public List<Employee> Employees
         {
             get { return employees; }
@@ -26,15 +30,65 @@ namespace Lab3
         {
             Employees.Add(employee);
         }
+        public Employee this[int index]
+        {
+            get
+            {
+                if(index >= 0 &&  index < Employees.Count)
+                {
+                    return Employees[index];
+                }
+                else
+                {
+                    return Employees[0];
+                }
+            }
+            set
+            {
+                if (index >= 0 && index < Employees.Count)
+                {
+                   Employees[index] = value;
+                    if(EmployeeReplaced != null)
+                    {
+                        EmployeeReplaced(this, new EmployeeListHandlerEventArgs(NameOfCollection, "Replaced the element", index));
+                    }
+                }
+            }
+        }
+        public bool Replace(int j, Employee emp)
+        {
+            if (Employees.Contains(Employees[j]))
+            {
+                Employees[j] = emp;
+                if(EmployeeReplaced != null)
+                {
+                    EmployeeReplaced(this, new EmployeeListHandlerEventArgs(NameOfCollection, "Replaced the element", j));
+                }
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+            
+        }
         public void AddDefaults()
         {
             Employees.Add(new Employee());
+            if(EmployeeAdded != null)
+            {
+                EmployeeAdded(this, new EmployeeListHandlerEventArgs(NameOfCollection, "Added an element", Employees.Count - 1));
+            }
         }
         public void AddEmployees(params Employee[] employees) 
         {
             for(int i = 0; i < employees.Length; i++)
             {
                 Employees.Add(employees[i]);
+                if (EmployeeAdded != null)
+                {
+                    EmployeeAdded(this, new EmployeeListHandlerEventArgs(NameOfCollection, "Added an element", Employees.Count - 1));
+                }
             }
         }
         public override string ToString()
